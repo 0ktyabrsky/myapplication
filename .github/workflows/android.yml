@@ -35,7 +35,7 @@ jobs:
           pip install flet
 
       - name: Build APK
-        working-directory: myapplication/src
+        working-directory: src
         run: |
           flet build apk --verbose
 
