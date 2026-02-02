@@ -10,37 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.11"
 
-      - name: Install system dependencies
-        run: |
-          sudo apt update
-          sudo apt install -y curl unzip zip openjdk-17-jdk
+    - uses: subosito/flutter-action@v2
+      with:
+        flutter-version: "3.38.7"
+        cache: true
 
-      - name: Install Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.38.7"
-          cache: true
+    - name: Install Flet
+      run: |
+        python -m pip install --upgrade pip
+        pip install flet
 
-      - name: Install Flet
-        run: |
-          python -m pip install --upgrade pip
-          pip install flet
+    - name: Build APK
+      run: |
+        flet build apk --verbose
 
-      - name: Build APK
-        working-directory: src
-        run: |
-          flet build apk --verbose
+    - name: Find APK
+      run: |
+        find . -name "*.apk"
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: flet-apk
-          path: myapplication/src/build/**/*.apk
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: flet-apk
+        path: "**/*.apk"
